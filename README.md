@@ -19,8 +19,6 @@ No backend. No subscriptions. Completely private.
 ### 📸 Screenshots
 
 ![Screenshot 1 - Interface](./docs/home.png)
-![Screenshot 2 - Transcript](./docs/interactive.png)
-![Screenshot 3 - JSON Output](./docs/json.png)
 
 
 ## ✨ Key Features
