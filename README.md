@@ -1,7 +1,7 @@
 <div align="center">
   <h1 align="center">Whisper Web Scribe</h1>
   <p align="center">
-    <strong>Browser-based Speech-to-Text with exact word-level timestamps, diarization, and WebGPU support. 100% private.</strong>
+    <strong>100% Free & Browser-based Speech-to-Text with exact word-level timestamps, diarization, and WebGPU support. Fully private.</strong>
   </p>
   <p align="center">
     <a href="https://whisper-web-scribe.vercel.app"><b>✨ View Live Demo ✨</b></a>
@@ -18,15 +18,14 @@ No backend. No subscriptions. Completely private.
 
 ### 📸 Screenshots
 
-*(Drag and drop your screenshots here or update these image paths on GitHub)*
-
-![Screenshot 1 - Interface](./docs/screen1.png)
-![Screenshot 2 - Transcript](./docs/screen2.png)
-![Screenshot 3 - JSON Output](./docs/screen3.png)
+![Screenshot 1 - Interface](./docs/home.png)
+![Screenshot 2 - Transcript](./docs/interactive.png)
+![Screenshot 3 - JSON Output](./docs/json.png)
 
 
 ## ✨ Key Features
 
+- **💸 100% Free Forever**: No backend costs, no API keys needed, and absolutely no subscriptions.
 - **🔒 100% Private Data**: Your audio/video files never leave your device. All inference is processed client-side.
 - **⏱️ Word-Level Timestamps**: Click any transcribed word to seek instantly to that exact moment in the audio.
 - **🎤 Karaoake Mode**: An immersive, auto-scrolling UI to follow along seamlessly as audio plays.
