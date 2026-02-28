@@ -41,7 +41,7 @@ export default function App() {
   const [showInfo, setShowInfo] = useState(false);
   const [activeTab, setActiveTab] = useState<'transcript' | 'karaoke' | 'json'>('transcript');
   const [copied, setCopied] = useState(false);
-  
+
   // New states for advanced features
   const [isRecording, setIsRecording] = useState(false);
   const [downloadStats, setDownloadStats] = useState({ speed: 0, loaded: 0, total: 0, timeRemaining: 0 });
@@ -63,7 +63,7 @@ export default function App() {
   useEffect(() => {
     const cached = localStorage.getItem('downloadedModels');
     if (cached) {
-      try { setDownloadedModels(JSON.parse(cached)); } catch(e) {}
+      try { setDownloadedModels(JSON.parse(cached)); } catch (e) { }
     }
   }, []);
 
@@ -85,17 +85,17 @@ export default function App() {
         setProgress({ status: 'progress', file: data.file, progress: globalProgressRef.current.percentage });
       } else if (data.status === 'progress') {
         downloadsRef.current[data.file] = { loaded: data.loaded, total: data.total };
-        
+
         let globalLoaded = 0;
         let globalTotal = 0;
         Object.values(downloadsRef.current).forEach(file => {
           globalLoaded += file.loaded || 0;
           globalTotal += file.total || 0;
         });
-        
+
         const now = Date.now();
         const timeDiff = (now - globalProgressRef.current.time) / 1000;
-        
+
         let speed = globalProgressRef.current.speed;
         if (timeDiff > 0.5) {
           const loadedDiff = globalLoaded - globalProgressRef.current.loaded;
@@ -104,20 +104,20 @@ export default function App() {
           globalProgressRef.current.loaded = globalLoaded;
           globalProgressRef.current.speed = speed;
         }
-        
+
         const remainingBytes = Math.max(0, globalTotal - globalLoaded);
         const timeRemaining = speed > 0 ? remainingBytes / speed : 0;
         const percentage = globalTotal > 0 ? Math.min(100, (globalLoaded / globalTotal) * 100) : 0;
-        
+
         globalProgressRef.current.percentage = percentage;
-        
+
         setDownloadStats({
           speed: speed / (1024 * 1024),
           loaded: globalLoaded / (1024 * 1024),
           total: globalTotal / (1024 * 1024),
           timeRemaining
         });
-        
+
         setProgress({ status: 'progress', file: data.file, progress: percentage });
       } else if (data.status === 'done') {
         if (downloadsRef.current[data.file]) {
@@ -140,7 +140,7 @@ export default function App() {
         let currentSpeaker = 1;
         const processedChunks = data.output.chunks.map((chunk: any, i: number, arr: any[]) => {
           if (i > 0) {
-            const prevEnd = arr[i-1].timestamp[1];
+            const prevEnd = arr[i - 1].timestamp[1];
             const currentStart = chunk.timestamp[0];
             if (currentStart - prevEnd > 1.5) { // 1.5s pause means new speaker
               currentSpeaker = currentSpeaker === 1 ? 2 : 1;
@@ -148,7 +148,7 @@ export default function App() {
           }
           return { ...chunk, speaker: `Speaker ${currentSpeaker}` };
         });
-        
+
         data.output.chunks = processedChunks;
         setTranscription(data.output);
         setIsProcessing(false);
@@ -224,7 +224,7 @@ export default function App() {
 
     try {
       const audioData = await decodeAudio(file);
-      
+
       // Send data to worker
       workerRef.current?.postMessage({
         audio: audioData,
@@ -300,12 +300,12 @@ export default function App() {
   const exportSubs = (format: 'srt' | 'vtt') => {
     if (!transcription) return;
     let content = format === 'vtt' ? 'WEBVTT\n\n' : '';
-    
+
     transcription.chunks.forEach((chunk, i) => {
       const start = chunk.timestamp?.[0] ?? 0;
       const end = chunk.timestamp?.[1] ?? start + 1;
       const text = chunk.text ?? chunk.word ?? '';
-      
+
       content += format === 'srt' ? `${i + 1}\n` : '';
       content += `${formatTimestamp(start, format === 'srt')} --> ${formatTimestamp(end, format === 'srt')}\n`;
       content += `${text.trim()}\n\n`;
@@ -344,8 +344,8 @@ export default function App() {
             <span>Word Timestamp Tester</span>
           </div>
           <nav className="flex items-center gap-4">
-            <button 
-              onClick={() => setShowInfo(true)} 
+            <button
+              onClick={() => setShowInfo(true)}
               className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors p-2 rounded-md hover:bg-[var(--secondary)]"
               title="How it Works"
             >
@@ -358,7 +358,7 @@ export default function App() {
       {/* Main Content */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-16 flex flex-col items-center">
         {/* Hero Section */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
@@ -391,7 +391,7 @@ export default function App() {
                     <label className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">Language</label>
                     <div className="flex items-center gap-2 bg-[var(--secondary)] px-3 py-2.5 rounded-lg border border-[var(--border)]">
                       <Globe className="w-4 h-4 text-[var(--muted-foreground)]" />
-                      <select 
+                      <select
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
                         className="bg-transparent border-none text-sm font-medium text-[var(--foreground)] focus:ring-0 outline-none cursor-pointer w-full"
@@ -410,7 +410,7 @@ export default function App() {
                     <label className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">Model Size</label>
                     <div className="flex items-center gap-2 bg-[var(--secondary)] px-3 py-2.5 rounded-lg border border-[var(--border)]">
                       <Cpu className="w-4 h-4 text-[var(--muted-foreground)]" />
-                      <select 
+                      <select
                         value={model}
                         onChange={(e) => setModel(e.target.value)}
                         className="bg-transparent border-none text-sm font-medium text-[var(--foreground)] focus:ring-0 outline-none cursor-pointer w-full"
@@ -426,7 +426,7 @@ export default function App() {
                     <label className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">Compute Device</label>
                     <div className="flex items-center gap-2 bg-[var(--secondary)] px-3 py-2.5 rounded-lg border border-[var(--border)]">
                       <Zap className="w-4 h-4 text-[var(--muted-foreground)]" />
-                      <select 
+                      <select
                         value={device}
                         onChange={(e) => setDevice(e.target.value)}
                         className="bg-transparent border-none text-sm font-medium text-[var(--foreground)] focus:ring-0 outline-none cursor-pointer w-full"
@@ -439,7 +439,7 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <motion.div 
+                  <motion.div
                     whileHover={{ y: -2 }}
                     transition={{ duration: 0.2 }}
                     className="relative group cursor-pointer h-full"
@@ -459,13 +459,13 @@ export default function App() {
                     </div>
                   </motion.div>
 
-                  <motion.div 
+                  <motion.div
                     whileHover={{ y: -2 }}
                     transition={{ duration: 0.2 }}
                     onClick={toggleRecording}
                     className={`h-full border-2 border-dashed rounded-[var(--radius)] p-12 text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-center
-                      ${isRecording 
-                        ? 'border-red-500/50 bg-red-500/10 hover:bg-red-500/20' 
+                      ${isRecording
+                        ? 'border-red-500/50 bg-red-500/10 hover:bg-red-500/20'
                         : 'border-[var(--border)] hover:border-[var(--foreground)] hover:bg-[var(--secondary)]/50'}`}
                   >
                     <div className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5 transition-transform duration-200
@@ -528,11 +528,11 @@ export default function App() {
               >
                 <Loader2 className="w-10 h-10 animate-spin text-[var(--foreground)] mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-2">
-                  {progress.status === 'init' ? 'Initializing Model...' : 
-                   progress.status === 'progress' ? 'Downloading Model Weights...' : 
-                   progress.status === 'ready' ? 'Transcribing Media...' : 'Processing...'}
+                  {progress.status === 'init' ? 'Initializing Model...' :
+                    progress.status === 'progress' ? 'Downloading Model Weights...' :
+                      progress.status === 'ready' ? 'Transcribing Media...' : 'Processing...'}
                 </h3>
-                
+
                 {progress.status === 'progress' && progress.progress !== undefined && (
                   <div className="w-full max-w-lg mt-6">
                     <div className="flex justify-between text-sm text-[var(--muted-foreground)] mb-3">
@@ -549,7 +549,7 @@ export default function App() {
                       </div>
                     </div>
                     <div className="h-2 bg-[var(--secondary)] rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-[var(--foreground)] transition-all duration-300 ease-out"
                         style={{ width: `${progress.progress}%` }}
                       />
@@ -561,7 +561,7 @@ export default function App() {
                     )}
                   </div>
                 )}
-                
+
                 {progress.status === 'ready' && (
                   <p className="text-[var(--muted-foreground)] text-sm mt-4">This might take a moment depending on your device and model size...</p>
                 )}
@@ -586,7 +586,7 @@ export default function App() {
                 className="bg-red-950/30 border border-red-900/50 rounded-[var(--radius)] p-8 text-center"
               >
                 <p className="text-red-400 font-medium mb-6">{error}</p>
-                <motion.button 
+                <motion.button
                   whileTap={{ scale: 0.95 }}
                   onClick={resetApp}
                   className="px-6 py-2.5 bg-red-900/50 text-red-200 rounded-lg font-medium hover:bg-red-900/70 transition-colors"
@@ -619,14 +619,14 @@ export default function App() {
                   >
                     {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
                   </motion.button>
-                  
+
                   <div className="flex-1 min-w-0">
                     <p className="font-medium truncate text-[var(--foreground)]">{file.name}</p>
                     <p className="text-sm text-[var(--muted-foreground)] font-mono mt-0.5">
                       {audioRef.current ? formatTime(currentTime) : '0:00'} / {audioRef.current ? formatTime(audioRef.current.duration || 0) : '0:00'}
                     </p>
                   </div>
-                  
+
                   <audio
                     ref={audioRef}
                     src={audioUrl || ''}
@@ -681,14 +681,14 @@ export default function App() {
                           const end = chunk.timestamp?.[1] ?? start + 1;
                           const wordText = chunk.text ?? chunk.word ?? '';
                           const speaker = chunk.speaker;
-                          
+
                           const isActive = currentTime >= start && currentTime <= end;
                           const isPast = currentTime > end;
-                          
+
                           // Show speaker label if it changed
-                          const prevSpeaker = index > 0 ? transcription.chunks[index-1].speaker : null;
+                          const prevSpeaker = index > 0 ? transcription.chunks[index - 1].speaker : null;
                           const showSpeaker = speaker && speaker !== prevSpeaker;
-                          
+
                           return (
                             <React.Fragment key={index}>
                               {showSpeaker && (
@@ -716,7 +716,7 @@ export default function App() {
                     )}
 
                     {activeTab === 'karaoke' && (
-                      <div 
+                      <div
                         ref={karaokeRef}
                         className="h-[400px] overflow-y-auto custom-scrollbar flex flex-col items-center py-32 px-4 scroll-smooth"
                       >
@@ -725,10 +725,10 @@ export default function App() {
                             const start = chunk.timestamp?.[0] ?? 0;
                             const end = chunk.timestamp?.[1] ?? start + 1;
                             const wordText = chunk.text ?? chunk.word ?? '';
-                            
+
                             const isActive = currentTime >= start && currentTime <= end;
                             const isPast = currentTime > end;
-                            
+
                             return (
                               <span
                                 key={index}
@@ -798,7 +798,7 @@ export default function App() {
       {/* Info Modal */}
       <AnimatePresence>
         {showInfo && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -806,7 +806,7 @@ export default function App() {
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
             onClick={() => setShowInfo(false)}
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -814,19 +814,19 @@ export default function App() {
               onClick={(e) => e.stopPropagation()}
               className="bg-[var(--card)] border border-[var(--border)] rounded-[var(--radius)] p-8 max-w-lg w-full shadow-2xl relative"
             >
-              <button 
+              <button
                 onClick={() => setShowInfo(false)}
                 className="absolute top-4 right-4 p-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] bg-[var(--secondary)] rounded-full transition-colors"
               >
                 <X size={18} />
               </button>
-              
+
               <div className="w-12 h-12 bg-[var(--secondary)] text-[var(--foreground)] rounded-xl flex items-center justify-center mb-6 border border-[var(--border)]">
                 <Terminal size={24} />
               </div>
-              
+
               <h3 className="text-xl font-semibold tracking-tight text-[var(--foreground)] mb-4">How it Works & API</h3>
-              
+
               <div className="space-y-4 text-[var(--muted-foreground)] text-sm leading-relaxed max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
                 <p>
                   This application runs entirely in your browser using <strong>Transformers.js</strong> and <strong>WebAssembly (WASM) / WebGPU</strong>.
@@ -834,7 +834,7 @@ export default function App() {
                 <p>
                   Your audio/video files are never sent to any external server. The processing is done locally using your device's CPU/GPU, ensuring 100% privacy.
                 </p>
-                
+
                 <h4 className="font-semibold text-[var(--foreground)] mt-4 mb-2">New Features</h4>
                 <ul className="list-disc pl-5 space-y-1">
                   <li><strong>Model Selection:</strong> Choose between Tiny, Base, and Small models for better accuracy.</li>
@@ -845,28 +845,7 @@ export default function App() {
                   <li><strong>Diarization:</strong> Heuristic speaker detection based on pauses.</li>
                 </ul>
 
-                <div className="mt-6 pt-6 border-t border-[var(--border)]">
-                  <h4 className="font-semibold text-[var(--foreground)] mb-2">API Integration</h4>
-                  <p className="mb-3">
-                    This system also includes a built-in REST API. Note: The API currently only supports WAV files, while the browser UI supports Video/MP3/WAV.
-                  </p>
-                  
-                  <div className="bg-[#09090b] text-[#d4d4d8] p-4 rounded-xl text-xs font-mono overflow-x-auto mb-3 border border-[var(--border)]">
-                    <p className="text-zinc-500 mb-1"># Example cURL request</p>
-                    <code>
-                      curl -X POST {window.location.origin}/api/transcribe \<br/>
-                      &nbsp;&nbsp;-H "Accept: application/json" \<br/>
-                      &nbsp;&nbsp;-F "audio=@/path/to/your/audio.wav" \<br/>
-                      &nbsp;&nbsp;-F "language=english"
-                    </code>
-                  </div>
 
-                  <p className="mb-2 text-[var(--foreground)] font-medium">Parameters:</p>
-                  <ul className="list-disc pl-5 space-y-1 mb-4">
-                    <li><code>audio</code>: The audio file (WAV format recommended for API)</li>
-                    <li><code>language</code>: (Optional) english, turkish, spanish, etc.</li>
-                  </ul>
-                </div>
               </div>
             </motion.div>
           </motion.div>
