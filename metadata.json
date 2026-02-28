@@ -1,0 +1,5 @@
+{
+  "name": "Word Timestamp Tester",
+  "description": "Browser-based Speech-to-Text with word-level timestamps using Transformers.js",
+  "requestFramePermissions": []
+}
