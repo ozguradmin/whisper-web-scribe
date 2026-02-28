@@ -1,7 +1,18 @@
 {
   "name": "whisper-web-scribe",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Browser-based Speech-to-Text with accurate word-level timestamps, diarization, and WebGPU support. 100% private.",
+  "author": "Ozgur Guler",
+  "keywords": [
+    "whisper",
+    "speech-to-text",
+    "transformers.js",
+    "react",
+    "webgpu",
+    "transcription",
+    "diarization"
+  ],
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
